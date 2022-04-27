@@ -1,60 +1,19 @@
-% counter = 0;
-% list1 = [];
-% list2 = [];
-% list3 = [];
-% 
-% list4 = [];
-% list5 = [];
-% list6 = [];
-% while true
-%     D = urlread("http://192.168.4.1/gyro");
-%     pause(1.0);
-%     disp(class(D));
-%     disp(D);
-%     D = strsplit(D," ");
-%     disp(D);
-%     counter= counter+1;
-%     list1(end+1)=str2double(D{1});
-%     list2(end+1)=str2double(D{2});
-%     list3(end+1)=str2double(D{3});
-% 
-%     list4(end+1)=str2double(D{4});
-%     list5(end+1)=str2double(D{5});
-%     list6(end+1)=str2double(D{6});
-%     disp(list3);
-%     plot(counter, list1,'r','LineWidth',3);
-%     %hold on;
-%     plot(counter, list2,'r','LineWidth',3);
-%     %hold on;
-%     plot(counter, list3,'r','LineWidth',3);
-%     %hold on;
-%     
-%     plot(counter, list4,'r','LineWidth',3);
-%     %hold on;
-%     plot(counter, list5,'r','LineWidth',3);
-%     %hold on;
-%     plot(counter, list6,'r','LineWidth',3);
-%     %hold off;
-%     drawnow;
-% end
-
-
-% 
-% temp = "-432 33 341 -16188 1072 1108";
-% temp = strsplit(temp," ");
-% disp(temp{1});
 
 i = 0;
 D = urlread("http://192.168.4.1/gyro");
 D = strsplit(D," ");
 
 ax = axes();
+%ax.ColorOrder = [0.8 0.8 0.9; 0.2 0.2 0.8; 0.9 0.4 0.5; 0.6 0.6 0.9; 0.6 0.8 0.2; 0.1 0.5 0.2];
+ax.ColorOrder = [1 0 0; 0 1 0; 0 0 1; 0 0 0;1 0 0; 0 1 0];
+% ax.LineWidth = 2;
+
 hold on;
-line1 = line(i, str2double(D{1}));  %handle for line 1
-line2 = line(i, str2double(D{2}));  %handle for line 2
-line3 = line(i, str2double(D{3}));  %handle for line 1
+line1 = line(i, str2double(D{1}));  
+line2 = line(i, str2double(D{2}));  
+line3 = line(i, str2double(D{3}));  
 line4 = line(i, str2double(D{4}));
-line5 = line(i, str2double(D{5}));  %handle for line 1
+line5 = line(i, str2double(D{5}));  
 line6 = line(i, str2double(D{6}));
 
 i = i+1;
