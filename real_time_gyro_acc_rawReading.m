@@ -1,6 +1,6 @@
 i = 0; % here the var i is used to interate over time interval and represents X axis data
 
-D = urlread("http://192.168.4.1/gyro"); % read initial values from url (ESP32 WROOM dev1 board)
+D = webread("http://192.168.4.1/gyro"); % read initial values from url (ESP32 WROOM dev1 board)
                                         % ESP32 sends output as a textfile 
 D = strsplit(D," ");                    % split the text like to separate 3 accelerometer values and 3 gyroscope vlaues
                                         % outputs of string D are: GyX, GyY, GyZ, AcX, AcY, AcZ 
@@ -75,7 +75,7 @@ line17 = line(i, str2double(D{2}));     % Gyroscope Y -axis original
 line18 = line(i, str2double(D{3}));     % Gyroscope Z -axis original
 
 %%%%%%%%%%%%%%%%%%%%
-% Gyroscope UAF %               % UAF: Unassigned filter
+% Gyroscope CF %               % UAF: Chebyshev filter
 %%%%%%%%%%%%%%%%%%%%
 ax6 = subplot(3,3,6);           % subplot at 2nd row 3rd column
 set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
@@ -113,7 +113,8 @@ set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
 % axis square
 
 % Initializing a bunch of lists to perfom real-time plot update
-[x_l,x_r13,x_r14,x_r15, x_r16,x_r17 ,x_r18, x_r19] = deal([]);
+[x_l,x_r13,x_r14,x_r15, x_r16,x_r17 ,x_r18, x_r19, x_r20, x_r21] = deal([]);
+[x_r7, x_r8, x_r9] = deal([]);
 
 %[x_special1, x_special2] = deal([]);
 
@@ -160,20 +161,17 @@ while(1)
     
     % END of subplot 1-3 (Gyro + Acc data plotting)
 
-    line7.XData = [line7.XData i];
-    line7.YData = [line7.YData str2double(D{4})];    % Accelerometer X -axis
-    line7.Color = [1 0 0];
-    line7.LineWidth = 1;
+%     line7.XData = [line7.XData i];
+%     line7.YData = [line7.YData str2double(D{4})];    % Accelerometer X -axis
     
-    line8.XData = [line8.XData i];
-    line8.YData = [line8.YData str2double(D{5})];    % Accelerometer Y -axis
-    line8.Color = [1 1 0];
-    line8.LineWidth = 1;
+    
+%     line8.XData = [line8.XData i];
+%     line8.YData = [line8.YData str2double(D{5})];    % Accelerometer Y -axis
+    
 
-    line9.XData = [line9.XData i];
-    line9.YData = [line9.YData str2double(D{6})];    % Accelerometer Z -axis
-    line9.Color = [0 1 0];
-    line9.LineWidth = 1;
+%     line9.XData = [line9.XData i];
+%     line9.YData = [line9.YData str2double(D{6})];    % Accelerometer Z -axis
+
     % End of Acclerometer, Plot at 3rd row 2nd column # ax2 update
 
     line10.XData = [line10.XData i];
@@ -193,40 +191,81 @@ while(1)
     
     if i>200
 
-        x_r13 = x_r13(2:end);
-        x_r14 = x_r14(2:end);
-        x_r15 = x_r15(2:end);
-        x_r16 = x_r16(2:end);
-        x_r17 = x_r17(2:end);
-        x_r19 = x_r19(2:end);
-        
-        x_r13(end+1)=str2double(D{1});              % Gyroscope X -axis
-        x_r14(end+1)=str2double(D{2});              % Gyroscope Y -axis
-        x_r15(end+1)=str2double(D{3});              % Gyroscope Z -axis
+        x_r7 = x_r7(2:end);                         % Accelerometer X unfiltered
+        x_r8 = x_r8(2:end);                         % Accelerometer Y unfiltered
+        x_r9 = x_r9(2:end);                         % Accelerometer Z unfiltered
 
-        x_r16(end+1)=str2double(D{1});              % Gyroscope X -axis
-        x_r17(end+1)=str2double(D{2});              % Gyroscope Y -axis
+        x_r13 = x_r13(2:end);                       % Gyroscope X unfiltered
+        x_r14 = x_r14(2:end);                       % Gyroscope Y unfiltered
+        x_r15 = x_r15(2:end);                       % Gyroscope Z unfiltered
+
+        x_r16 = x_r16(2:end);                       % Svatisky Golay Filter (Gyroscope X)
+        x_r17 = x_r17(2:end);                       % Svatisky Golay Filter (Gyroscope Y)
+        x_r18 = x_r18(2:end); 
+
+        x_r19 = x_r19(2:end);   
+        x_r20 = x_r20(2:end); 
+        x_r21 = x_r21(2:end); 
+
+        x_r7(end+1)=str2double(D{4});              % Accelerometer X -axis Unfiltered
+        x_r8(end+1)=str2double(D{5});              % Accelerometer Y -axis Unfiltered
+        x_r9(end+1)=str2double(D{6});              % Accelerometer Z -axis Unfiltered
+
+        x_r13(end+1)=str2double(D{1});              % Gyroscope X -axis Unfiltered
+        x_r14(end+1)=str2double(D{2});              % Gyroscope Y -axis Unfiltered
+        x_r15(end+1)=str2double(D{3});              % Gyroscope Z -axis Unfiltered
+
+        x_r16(end+1)=str2double(D{1});              % Svatisky Golay Filter Gyroscope X -axis
+        x_r17(end+1)=str2double(D{2});              % Svatisky Golay Filter Gyroscope Y -axis
+        x_r18(end+1)=str2double(D{3});              % Svatisky Golay Filter Gyroscope Z -axis
+
+        x_r19(end+1)=str2double(D{1});              % Chebyshev filter Filter Gyroscope X -axis
+        x_r20(end+1)=str2double(D{2});              % Chebyshev filter Filter Gyroscope Y -axis
+        x_r21(end+1)=str2double(D{3});              % Chebyshev filter Filter Gyroscope Z -axis
 %         t1=[];
 %         t1=rand(1,3);
 %         x_r19(end+3)=t1;
-
+        
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        line7.XData = (1:100);
+        line7.YData = x_r7;                           % Accelerometer X -axis original
+        line8.XData = (1:100);
+        line8.YData = x_r8;                           % Accelerometer Y -axis original
+        line9.XData = (1:100);
+        line9.YData = x_r9;                           % Accelerometer Z -axis original
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         line13.XData = (1:100);
-        line13.YData = x_r13;
+        line13.YData = x_r13;                           % Gyroscope X -axis original
         line14.XData = (1:100);
-        line14.YData = x_r14;
+        line14.YData = x_r14;                           % Gyroscope Y -axis original
         line15.XData = (1:100);
-        line15.YData = x_r15;
+        line15.YData = x_r15;                           % Gyroscope Z -axis original
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         line16.XData = (1:100);
-        line16.YData = smoothdata(x_r16,20,'sgolay');
+        line16.YData = smoothdata(x_r16,30,'sgolay');   % Svatisky Golay Filter Gyroscope X -axis
         line17.XData = (1:100);
-        [b, a] = cheby1(4, 20,(400/(1000/2))); % fs = 1000, fc = 400
-        o = filter(b, a, x_r17);
-        line17.YData = o;
+        line17.YData = smoothdata(x_r17,30,'sgolay');   % Svatisky Golay Filter Gyroscope Y -axis
+        line18.XData = (1:100);
+        line18.YData = smoothdata(x_r18,30,'sgolay');   % Svatisky Golay Filter Gyroscope Y -axis
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        line19.XData = (1:100);
+        [b, a] = cheby1(4, 20,(400/(1000/2))); % fs = 1000, fc = 400    Chebyshev filter Gyroscope X -axis
+        oX = filter(b, a, x_r19);
+        line19.YData = oX;
 
+        oY = filter(b, a, x_r20);                       % Chebyshev filter Gyroscope Y -axis
+        line20.XData = (1:100);
+        line20.YData = oY;
+
+        oZ = filter(b, a, x_r21);                       % Chebyshev filter Gyroscope Z -axis
+        line21.XData = (1:100);
+        line21.YData = oZ;
+
+        %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         % Making sense of gyro data
         % w_x = (gyro_x/(2.0**15.0))*gyro_sens
         % x = x * pi/180;  
-        dcm_filtered = angle2dcm( str2double(D{1}), str2double(D{2}), str2double(D{3}));
+        dcm_filtered = angle2dcm( str2double(D{4}), str2double(D{5}), str2double(D{6}));
         VR_filtered=dcm_filtered*V;
         XR_filtered=reshape(VR_filtered(1,:),4,6);
         YR_filtered=reshape(VR_filtered(2,:),4,6);
@@ -254,13 +293,28 @@ while(1)
     else
         x_l(end+1)=i;
 
+        x_r7(end+1)=str2double(D{4});      % Accelerometer X -axis
+        x_r8(end+1)=str2double(D{5});      % Accelerometer Y -axis
+        x_r9(end+1)=str2double(D{6});      % Accelerometer Z -axis
+
         x_r13(end+1)=str2double(D{1});      % Gyroscope X -axis
         x_r14(end+1)=str2double(D{2});      % Gyroscope Y -axis
         x_r15(end+1)=str2double(D{3});      % Gyroscope Z -axis
-        x_r16(end+1)=rand(1);
-        x_r17(end+1)=rand(1);
-        x_r19(end+1)=rand(1);
+
+        x_r16(end+1)=str2double(D{1});
+        x_r17(end+1)=str2double(D{2});
+        x_r18(end+1)=str2double(D{3});
+        
+        x_r19(end+1)=str2double(D{1});
+        x_r20(end+1)=str2double(D{2});
+        x_r21(end+1)=str2double(D{3});
        
+        line7.XData = [line7.XData i];
+        line7.YData = [line7.YData str2double(D{4})];    % Accelerometer X -axis
+        line8.XData = [line8.XData i];
+        line8.YData = [line8.YData str2double(D{5})];    % Accelerometer Y -axis
+        line9.XData = [line9.XData i];
+        line9.YData = [line9.YData str2double(D{6})];    % Accelerometer Z -axis
 
         line13.XData = [line13.XData i];
         line13.YData = [line13.YData str2double(D{1})];     % Gyroscope X -axis
@@ -268,14 +322,30 @@ while(1)
         line14.YData = [line14.YData str2double(D{2})];     % Gyroscope Y -axis
         line15.XData = [line15.XData i];
         line15.YData = [line15.YData str2double(D{3})];     % Gyroscope Z -axis
+        
         line16.XData = [line16.XData i];
-        line16.YData = [line16.YData rand(1)];
+        line16.YData = [line16.YData str2double(D{1})];
         line17.XData = [line17.XData i];
-        line17.YData = [line17.YData rand(1)];
+        line17.YData = [line17.YData str2double(D{2})];
+        line18.XData = [line18.XData i];
+        line18.YData = [line18.YData str2double(D{3})];
+
         line19.XData = [line19.XData i];
-        line19.YData = [line19.YData rand(1)];
+        line19.YData = [line19.YData str2double(D{1})];
+        line20.XData = [line20.XData i];
+        line20.YData = [line20.YData str2double(D{2})];
+        line21.XData = [line21.XData i];
+        line21.YData = [line21.YData str2double(D{3})];
+        
 
     end
+
+    line7.Color = [1 0 0];
+    line7.LineWidth = 1;
+    line8.Color = [1 1 0];
+    line8.LineWidth = 1;
+    line9.Color = [0 1 0];
+    line9.LineWidth = 1;
 
     line13.Color = [0.9 0.1 0.2];
     line13.LineWidth = 1;
@@ -287,6 +357,14 @@ while(1)
     line16.LineWidth = 1;
     line17.Color = [0.5 0.1 0.7];
     line17.LineWidth = 1;
+    line18.Color = [0.2 0.1 0.3];
+    line18.LineWidth = 1;
+    line19.Color = [0.7 0.7 0.7];
+    line19.LineWidth = 1;
+    line20.Color = [0.55 0.14 0.3];
+    line20.LineWidth = 1;
+    line21.Color = [0.22 0.18 0.79];
+    line21.LineWidth = 1;
 
     
     i=i+1;
