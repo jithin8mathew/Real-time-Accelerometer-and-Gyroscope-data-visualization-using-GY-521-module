@@ -84,6 +84,7 @@ Y = L/1.5*(Y-0.5) + yc;
 Z = L/3*(Z-0.5) + zc;
 V=[reshape(X,1,24); reshape(Y,1,24); reshape(Z,1,24)]; %rashape takesthe element of X and it fix them in only one coulomn (in this case)
 ax7 = subplot(3,3,9);
+set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
 
 % fill3(X,Y,Z,C)
 % axis square
@@ -103,16 +104,19 @@ while(1)
     line1.YData = [line1.YData rand(1)];
     line1.Color = [1 0 0];
     line1.LineWidth = 1;
+    line1.LineStyle = '-';
    
     line2.XData = [line2.XData i];
     line2.YData = [line2.YData rand(1)];
     line2.Color = [1 1 0];
     line2.LineWidth = 1;
+    line2.LineStyle = '-';
     
-     line3.XData = [line3.XData i];
+    line3.XData = [line3.XData i];
     line3.YData = [line3.YData rand(1)];
     line3.Color = [0 1 0];
     line3.LineWidth = 1;
+    line3.LineStyle = '-';
 
      line4.XData = [line4.XData i];
     line4.YData = [line4.YData rand(1)];
@@ -193,7 +197,7 @@ while(1)
         YR_filtered=reshape(VR_filtered(2,:),4,6);
         ZR_filtered=reshape(VR_filtered(3,:),4,6);
 
-        fill3(XR_filtered,YR_filtered,ZR_filtered,C,'FaceAlpha',alpha);
+        fill3(XR_filtered,YR_filtered,ZR_filtered,C,'FaceAlpha',alpha,'EdgeColor',[0.24,0.24,0.24]);
         xlim([-2 2]);
         ylim([-2 2]);
         zlim([-2 2]);
