@@ -5,13 +5,19 @@ D = webread("http://192.168.4.1/gyro"); % read initial values from url (ESP32 WR
 D = strsplit(D," ");                    % split the text like to separate 3 accelerometer values and 3 gyroscope vlaues
                                         % outputs of string D are: GyX, GyY, GyZ, AcX, AcY, AcZ 
 
-gyro_pitch = str2double(D{1}) % / 131.0;
-gyro_roll = str2double(D{2}) % / 131.0;
-gyro_yaw = str2double(D{3}) % / 131.0;
+%gyro_pitch = str2double(D{1});
+%gyro_roll = str2double(D{2});
+%gyro_yaw = str2double(D{3});
+% gyro_pitch = str2double(D{1}) / 131.0;
+gyro_pitch = (atan2(str2double(D{4}), sqrt(str2double(D{5})*str2double(D{5}) + str2double(D{6})*str2double(D{6})))*180.0)/pi; %str2double(D{1})/(2.0^15.0)*250;
+% gyro_roll = str2double(D{2}) / 131.0;
+gyro_roll = (atan2(- str2double(D{5}), str2double(D{6}))*180.0)/pi; % str2double(D{2})/(2.0^15.0)*250;
+% gyro_yaw = str2double(D{3}) / 131.0;
+gyro_yaw = str2double(D{3})/(2.0^15.0)*250;
 
-gForceX = str2double(D{4}) % / 16384.0;
-gForceY = str2double(D{5}) % / 16384.0; 
-gForceZ = str2double(D{6}) % / 16384.0;
+gForceX = str2double(D{4}) / 16384.0;
+gForceY = str2double(D{5}) / 16384.0; 
+gForceZ = str2double(D{6}) / 16384.0;
 
 figure1=figure('Color',[0.30,0.30,0.30],'InvertHardcopy','off'); % set prarameters to figure object
 
@@ -131,9 +137,20 @@ set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
 while(1)
     pause(0.10); % Sampling Frequence : 10 milliseconds 
     
-    D = urlread("http://192.168.4.1/gyro"); % Once again read data from ESP32, but this time continiously
+    D = webread("http://192.168.4.1/gyro"); % Once again read data from ESP32, but this time continiously
     D = strsplit(D," ");                    % Split the data
+    
+    % gyro_pitch = str2double(D{1}) / 131.0;
+    gyro_pitch = (atan2(str2double(D{4}), sqrt(str2double(D{5})*str2double(D{5}) + str2double(D{6})*str2double(D{6})))*180.0)/pi; %str2double(D{1})/(2.0^15.0)*250;
+    % gyro_roll = str2double(D{2}) / 131.0; 
+    gyro_roll = (atan2(- str2double(D{5}), str2double(D{6}))*180.0)/pi; % str2double(D{2})/(2.0^15.0)*250;
+    % gyro_yaw = str2double(D{3}) / 131.0;  
+    gyro_yaw = str2double(D{3})/(2.0^15.0)*250;
 
+    gForceX = str2double(D{4}) / 16384.0;
+    gForceY = str2double(D{5}) / 16384.0; 
+    gForceZ = str2double(D{6}) / 16384.0;
+    
     line1.XData = [line1.XData i];
     line1.YData = [line1.YData gyro_pitch];    % Gyroscope X -axis
     line1.Color = [1 0 0];
