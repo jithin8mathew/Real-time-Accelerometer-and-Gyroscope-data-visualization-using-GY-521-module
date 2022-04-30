@@ -5,13 +5,13 @@ D = webread("http://192.168.4.1/gyro"); % read initial values from url (ESP32 WR
 D = strsplit(D," ");                    % split the text like to separate 3 accelerometer values and 3 gyroscope vlaues
                                         % outputs of string D are: GyX, GyY, GyZ, AcX, AcY, AcZ 
 
-gyro_pitch = str2double(D{1}) / 131.0;
-gyro_roll = str2double(D{2}) / 131.0;
-gyro_yaw = str2double(D{3}) / 131.0;
+gyro_pitch = str2double(D{1}) % / 131.0;
+gyro_roll = str2double(D{2}) % / 131.0;
+gyro_yaw = str2double(D{3}) % / 131.0;
 
-gForceX = str2double(D{4}) / 16384.0;
-gForceY = str2double(D{5}) / 16384.0; 
-gForceZ = str2double(D{6}) / 16384.0;
+gForceX = str2double(D{4}) % / 16384.0;
+gForceY = str2double(D{5}) % / 16384.0; 
+gForceZ = str2double(D{6}) % / 16384.0;
 
 figure1=figure('Color',[0.30,0.30,0.30],'InvertHardcopy','off'); % set prarameters to figure object
 
