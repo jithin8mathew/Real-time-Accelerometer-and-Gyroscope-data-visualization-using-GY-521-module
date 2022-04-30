@@ -4,6 +4,15 @@ D = webread("http://192.168.4.1/gyro"); % read initial values from url (ESP32 WR
                                         % ESP32 sends output as a textfile 
 D = strsplit(D," ");                    % split the text like to separate 3 accelerometer values and 3 gyroscope vlaues
                                         % outputs of string D are: GyX, GyY, GyZ, AcX, AcY, AcZ 
+
+gyro_pitch = str2double(D{1}) / 131.0;
+gyro_roll = str2double(D{2}) / 131.0;
+gyro_yaw = str2double(D{3}) / 131.0;
+
+gForceX = str2double(D{4}) / 16384.0;
+gForceY = str2double(D{5}) / 16384.0; 
+gForceZ = str2double(D{6}) / 16384.0;
+
 figure1=figure('Color',[0.30,0.30,0.30],'InvertHardcopy','off'); % set prarameters to figure object
 
 ax1 = subplot(3,3,[1,2,3]);         % first subplot that will plot gyro and accelerometer values in real-time
@@ -14,12 +23,12 @@ ylabel(ax1,'Acclerometer and gyroscope')
 
 hold on;
                                     % convert sting to double before passing  
-line1 = line(i, str2double(D{1}));  % Gyroscope X -axis (degrees)
-line2 = line(i, str2double(D{2}));  % Gyroscope Y -axis
-line3 = line(i, str2double(D{3}));  % Gyroscope Z -axis
-line4 = line(i, str2double(D{4}));  % Accelerometer X -axis
-line5 = line(i, str2double(D{5}));  % Accelerometer Y -axis
-line6 = line(i, str2double(D{6}));  % Accelerometer Z -axis
+line1 = line(i, gyro_pitch);  % Gyroscope X -axis (degrees)
+line2 = line(i, gyro_roll);  % Gyroscope Y -axis
+line3 = line(i, gyro_yaw);  % Gyroscope Z -axis
+line4 = line(i, gForceX);  % Accelerometer X -axis
+line5 = line(i, gForceY);  % Accelerometer Y -axis
+line6 = line(i, gForceZ);  % Accelerometer Z -axis
 
 i = i+1;
 
@@ -32,9 +41,9 @@ set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
 xlabel(ax2,'time')
 ylabel(ax2,'Acclerometer Filter XYZ')
 
-line7 = line(i, str2double(D{4}));  % Accelerometer X -axis
-line8 = line(i, str2double(D{5}));  % Accelerometer Y -axis
-line9 = line(i, str2double(D{6}));  % Accelerometer Z -axis
+line7 = line(i, gForceX);  % Accelerometer X -axis
+line8 = line(i, gForceY);  % Accelerometer Y -axis
+line9 = line(i, gForceZ);  % Accelerometer Z -axis
 
 %%%%%%%%%%%%%%%%%%%%
 % Accelerometer UF %                % UF: Unfiltered
@@ -45,9 +54,9 @@ set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
 xlabel(ax3,'time')
 ylabel(ax3,'Acclerometer')
 
-line10 = line(i, str2double(D{4})); % Accelerometer X -axis original 
-line11 = line(i, str2double(D{5})); % Accelerometer y -axis original 
-line12 = line(i, str2double(D{6})); % Accelerometer Z -axis original
+line10 = line(i, gForceX); % Accelerometer X -axis original 
+line11 = line(i, gForceY); % Accelerometer y -axis original 
+line12 = line(i, gForceZ); % Accelerometer Z -axis original
 
 %%%%%%%%%%%%%%%%%%%%
 % Gyroscope UF %                % UF: Unfiltered
@@ -58,9 +67,9 @@ set(gca,'color',[0.24,0.24,0.24],'xticklabel',[], 'XColor',[1 1 1], 'YColor',[1 
 xlabel(ax4,'time')
 ylabel(ax4,'Gyroscope')
 
-line13 = line(i, str2double(D{1}));      % Gyroscope X -axis original
-line14 = line(i, str2double(D{2}));      % Gyroscope Y -axis original
-line15 = line(i, str2double(D{3}));      % Gyroscope Z -axis original
+line13 = line(i, gyro_pitch);      % Gyroscope X -axis original
+line14 = line(i, gyro_roll);      % Gyroscope Y -axis original
+line15 = line(i, gyro_yaw);      % Gyroscope Z -axis original
 
 %%%%%%%%%%%%%%%%%%%%
 % Gyroscope SGF %               % SGF: Svatisky Golay Filter
@@ -70,9 +79,9 @@ set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
 xlabel(ax5,'time')
 ylabel(ax5,'Gyroscope Svatisky Golay (20%)')
 
-line16 = line(i, str2double(D{1}));     % Gyroscope X -axis original
-line17 = line(i, str2double(D{2}));     % Gyroscope Y -axis original
-line18 = line(i, str2double(D{3}));     % Gyroscope Z -axis original
+line16 = line(i, gyro_pitch);     % Gyroscope X -axis original
+line17 = line(i, gyro_roll);     % Gyroscope Y -axis original
+line18 = line(i, gyro_yaw);     % Gyroscope Z -axis original
 
 %%%%%%%%%%%%%%%%%%%%
 % Gyroscope CF %               % UAF: Chebyshev filter
@@ -82,9 +91,9 @@ set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
 xlabel(ax6,'time')
 ylabel(ax6,'Gyro Chebyshev filter Low pass')
 
-line19 = line(i, str2double(D{1}));
-line20 = line(i, str2double(D{1}));  
-line21 = line(i, str2double(D{1}));
+line19 = line(i, gyro_pitch);
+line20 = line(i, gyro_pitch);  
+line21 = line(i, gyro_pitch);
 
                                 % Implementation from: https://github.com/leos313/MPU6050-matlab/blob/master/MPU6050_cube_rotation_2015_03_18.m
 xc=0; yc=0; zc=0;               % coordinated of the center
@@ -126,35 +135,35 @@ while(1)
     D = strsplit(D," ");                    % Split the data
 
     line1.XData = [line1.XData i];
-    line1.YData = [line1.YData str2double(D{1})];    % Gyroscope X -axis
+    line1.YData = [line1.YData gyro_pitch];    % Gyroscope X -axis
     line1.Color = [1 0 0];
     line1.LineWidth = 1;
     line1.LineStyle = '-';
    
     line2.XData = [line2.XData i];
-    line2.YData = [line2.YData str2double(D{2})];    % Gyroscope Y -axis
+    line2.YData = [line2.YData gyro_roll];    % Gyroscope Y -axis
     line2.Color = [1 1 0];
     line2.LineWidth = 1;
     line2.LineStyle = '-';
     
     line3.XData = [line3.XData i];
-    line3.YData = [line3.YData str2double(D{3})];    % Gyroscope Z -axis
+    line3.YData = [line3.YData gyro_yaw];    % Gyroscope Z -axis
     line3.Color = [0 1 0];
     line3.LineWidth = 1;
     line3.LineStyle = '-';
 
      line4.XData = [line4.XData i];
-    line4.YData = [line4.YData str2double(D{4})];    % Accelerometer X -axis
+    line4.YData = [line4.YData gForceX];    % Accelerometer X -axis
     line4.Color = [0 1 0];
     line4.LineWidth = 1;
 
      line5.XData = [line5.XData i];
-    line5.YData = [line5.YData str2double(D{5})];    % Accelerometer Y -axis
+    line5.YData = [line5.YData gForceY];    % Accelerometer Y -axis
     line5.Color = [1 1 0];
     line5.LineWidth = 1;
 
      line6.XData = [line6.XData i];
-    line6.YData = [line6.YData str2double(D{6})];    % Accelerometer Z -axis
+    line6.YData = [line6.YData gForceZ];    % Accelerometer Z -axis
     line6.Color = [0 1 1];
     line6.LineWidth = 1;
     i=i+1;
@@ -162,30 +171,30 @@ while(1)
     % END of subplot 1-3 (Gyro + Acc data plotting)
 
 %     line7.XData = [line7.XData i];
-%     line7.YData = [line7.YData str2double(D{4})];    % Accelerometer X -axis
+%     line7.YData = [line7.YData gForceX];    % Accelerometer X -axis
     
     
 %     line8.XData = [line8.XData i];
-%     line8.YData = [line8.YData str2double(D{5})];    % Accelerometer Y -axis
+%     line8.YData = [line8.YData gForceY];    % Accelerometer Y -axis
     
 
 %     line9.XData = [line9.XData i];
-%     line9.YData = [line9.YData str2double(D{6})];    % Accelerometer Z -axis
+%     line9.YData = [line9.YData gForceZ];    % Accelerometer Z -axis
 
     % End of Acclerometer, Plot at 3rd row 2nd column # ax2 update
 
     line10.XData = [line10.XData i];
-    line10.YData = [line10.YData str2double(D{4})];  % Accelerometer X -axis
+    line10.YData = [line10.YData gForceX];  % Accelerometer X -axis
     line10.Color = [1 1 1];
     line10.LineWidth = 1;
 
     line11.XData = [line11.XData i];
-    line11.YData = [line11.YData str2double(D{5})];  % Accelerometer Y -axis
+    line11.YData = [line11.YData gForceY];  % Accelerometer Y -axis
     line11.Color = [1 1 0];
     line11.LineWidth = 1;
 
     line12.XData = [line12.XData i];
-    line12.YData = [line12.YData str2double(D{6})];  % Accelerometer Z -axis
+    line12.YData = [line12.YData gForceZ];  % Accelerometer Z -axis
     line12.Color = [0 1 1];
     line12.LineWidth = 1;
     
@@ -207,21 +216,21 @@ while(1)
         x_r20 = x_r20(2:end); 
         x_r21 = x_r21(2:end); 
 
-        x_r7(end+1)=str2double(D{4});              % Accelerometer X -axis Unfiltered
-        x_r8(end+1)=str2double(D{5});              % Accelerometer Y -axis Unfiltered
-        x_r9(end+1)=str2double(D{6});              % Accelerometer Z -axis Unfiltered
+        x_r7(end+1)=gForceX;              % Accelerometer X -axis Unfiltered
+        x_r8(end+1)=gForceY;              % Accelerometer Y -axis Unfiltered
+        x_r9(end+1)=gForceZ;              % Accelerometer Z -axis Unfiltered
 
-        x_r13(end+1)=str2double(D{1});              % Gyroscope X -axis Unfiltered
-        x_r14(end+1)=str2double(D{2});              % Gyroscope Y -axis Unfiltered
-        x_r15(end+1)=str2double(D{3});              % Gyroscope Z -axis Unfiltered
+        x_r13(end+1)=gyro_pitch;              % Gyroscope X -axis Unfiltered
+        x_r14(end+1)=gyro_roll;              % Gyroscope Y -axis Unfiltered
+        x_r15(end+1)=gyro_yaw;              % Gyroscope Z -axis Unfiltered
 
-        x_r16(end+1)=str2double(D{1});              % Svatisky Golay Filter Gyroscope X -axis
-        x_r17(end+1)=str2double(D{2});              % Svatisky Golay Filter Gyroscope Y -axis
-        x_r18(end+1)=str2double(D{3});              % Svatisky Golay Filter Gyroscope Z -axis
+        x_r16(end+1)=gyro_pitch;              % Svatisky Golay Filter Gyroscope X -axis
+        x_r17(end+1)=gyro_roll;              % Svatisky Golay Filter Gyroscope Y -axis
+        x_r18(end+1)=gyro_yaw;              % Svatisky Golay Filter Gyroscope Z -axis
 
-        x_r19(end+1)=str2double(D{1});              % Chebyshev filter Filter Gyroscope X -axis
-        x_r20(end+1)=str2double(D{2});              % Chebyshev filter Filter Gyroscope Y -axis
-        x_r21(end+1)=str2double(D{3});              % Chebyshev filter Filter Gyroscope Z -axis
+        x_r19(end+1)=gyro_pitch;              % Chebyshev filter Filter Gyroscope X -axis
+        x_r20(end+1)=gyro_roll;              % Chebyshev filter Filter Gyroscope Y -axis
+        x_r21(end+1)=gyro_yaw;              % Chebyshev filter Filter Gyroscope Z -axis
 %         t1=[];
 %         t1=rand(1,3);
 %         x_r19(end+3)=t1;
@@ -265,7 +274,7 @@ while(1)
         % Making sense of gyro data
         % w_x = (gyro_x/(2.0**15.0))*gyro_sens
         % x = x * pi/180;  
-        dcm_filtered = angle2dcm( str2double(D{4}), str2double(D{5}), str2double(D{6}));
+        dcm_filtered = angle2dcm( gForceX, gForceY, gForceZ);
         VR_filtered=dcm_filtered*V;
         XR_filtered=reshape(VR_filtered(1,:),4,6);
         YR_filtered=reshape(VR_filtered(2,:),4,6);
@@ -293,49 +302,49 @@ while(1)
     else
         x_l(end+1)=i;
 
-        x_r7(end+1)=str2double(D{4});      % Accelerometer X -axis
-        x_r8(end+1)=str2double(D{5});      % Accelerometer Y -axis
-        x_r9(end+1)=str2double(D{6});      % Accelerometer Z -axis
+        x_r7(end+1)=gForceX;      % Accelerometer X -axis
+        x_r8(end+1)=gForceY;      % Accelerometer Y -axis
+        x_r9(end+1)=gForceZ;      % Accelerometer Z -axis
 
-        x_r13(end+1)=str2double(D{1});      % Gyroscope X -axis
-        x_r14(end+1)=str2double(D{2});      % Gyroscope Y -axis
-        x_r15(end+1)=str2double(D{3});      % Gyroscope Z -axis
+        x_r13(end+1)=gyro_pitch;      % Gyroscope X -axis
+        x_r14(end+1)=gyro_roll;      % Gyroscope Y -axis
+        x_r15(end+1)=gyro_yaw;      % Gyroscope Z -axis
 
-        x_r16(end+1)=str2double(D{1});
-        x_r17(end+1)=str2double(D{2});
-        x_r18(end+1)=str2double(D{3});
+        x_r16(end+1)=gyro_pitch;
+        x_r17(end+1)=gyro_roll;
+        x_r18(end+1)=gyro_yaw;
         
-        x_r19(end+1)=str2double(D{1});
-        x_r20(end+1)=str2double(D{2});
-        x_r21(end+1)=str2double(D{3});
+        x_r19(end+1)=gyro_pitch;
+        x_r20(end+1)=gyro_roll;
+        x_r21(end+1)=gyro_yaw;
        
         line7.XData = [line7.XData i];
-        line7.YData = [line7.YData str2double(D{4})];    % Accelerometer X -axis
+        line7.YData = [line7.YData gForceX];    % Accelerometer X -axis
         line8.XData = [line8.XData i];
-        line8.YData = [line8.YData str2double(D{5})];    % Accelerometer Y -axis
+        line8.YData = [line8.YData gForceY];    % Accelerometer Y -axis
         line9.XData = [line9.XData i];
-        line9.YData = [line9.YData str2double(D{6})];    % Accelerometer Z -axis
+        line9.YData = [line9.YData gForceZ];    % Accelerometer Z -axis
 
         line13.XData = [line13.XData i];
-        line13.YData = [line13.YData str2double(D{1})];     % Gyroscope X -axis
+        line13.YData = [line13.YData gyro_pitch];     % Gyroscope X -axis
         line14.XData = [line14.XData i];
-        line14.YData = [line14.YData str2double(D{2})];     % Gyroscope Y -axis
+        line14.YData = [line14.YData gyro_roll];     % Gyroscope Y -axis
         line15.XData = [line15.XData i];
-        line15.YData = [line15.YData str2double(D{3})];     % Gyroscope Z -axis
+        line15.YData = [line15.YData gyro_yaw];     % Gyroscope Z -axis
         
         line16.XData = [line16.XData i];
-        line16.YData = [line16.YData str2double(D{1})];
+        line16.YData = [line16.YData gyro_pitch];
         line17.XData = [line17.XData i];
-        line17.YData = [line17.YData str2double(D{2})];
+        line17.YData = [line17.YData gyro_roll];
         line18.XData = [line18.XData i];
-        line18.YData = [line18.YData str2double(D{3})];
+        line18.YData = [line18.YData gyro_yaw];
 
         line19.XData = [line19.XData i];
-        line19.YData = [line19.YData str2double(D{1})];
+        line19.YData = [line19.YData gyro_pitch];
         line20.XData = [line20.XData i];
-        line20.YData = [line20.YData str2double(D{2})];
+        line20.YData = [line20.YData gyro_roll];
         line21.XData = [line21.XData i];
-        line21.YData = [line21.YData str2double(D{3})];
+        line21.YData = [line21.YData gyro_yaw];
         
 
     end
