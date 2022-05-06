@@ -5,6 +5,13 @@ D = webread("http://192.168.4.1/gyro"); % read initial values from url (ESP32 WR
 D = strsplit(D," ");                    % split the text like to separate 3 accelerometer values and 3 gyroscope vlaues
                                         % outputs of string D are: GyX, GyY, GyZ, AcX, AcY, AcZ 
 
+                                        % 1 = gyro_X
+                                        % 2 = gyro_Y
+                                        % 3 = gyro_Z
+                                        % 4 = accelerometer_X
+                                        % 5 = accelerometer_Y
+                                        % 6 = accelerometer_Z
+inputList = [];
 %gyro_pitch = str2double(D{1});
 %gyro_roll = str2double(D{2});
 %gyro_yaw = str2double(D{3});
