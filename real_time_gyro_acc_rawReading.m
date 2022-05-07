@@ -11,7 +11,8 @@ D = strsplit(D," ");                    % split the text like to separate 3 acce
                                         % 4 = accelerometer_X
                                         % 5 = accelerometer_Y
                                         % 6 = accelerometer_Z
-inputList = [];
+inputList = [1, 2, 3, 4, 5, 6, 4, 5, 6, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3];
+
 %gyro_pitch = str2double(D{1});
 %gyro_roll = str2double(D{2});
 %gyro_yaw = str2double(D{3});
@@ -142,12 +143,13 @@ set(gca,'color',[0.24,0.24,0.24], 'XColor',[1 1 1], 'YColor',[1 1 1]);
 
 % INFINITE LOOP
 while(1)
-    pause(0.10); % Sampling Frequence : 10 milliseconds 
-    
+
     D = webread("http://192.168.4.1/gyro"); % Once again read data from ESP32, but this time continiously
     D = strsplit(D," ");                    % Split the data
-    
-    % gyro_pitch = str2double(D{1}) / 131.0;
+
+    pause(0.10); % Sampling Frequence : 10 milliseconds 
+
+     % gyro_pitch = str2double(D{1}) / 131.0;
     gyro_pitch = (atan2(str2double(D{4}), sqrt(str2double(D{5})*str2double(D{5}) + str2double(D{6})*str2double(D{6})))*180.0)/pi; %str2double(D{1})/(2.0^15.0)*250;
     % gyro_roll = str2double(D{2}) / 131.0; 
     gyro_roll = (atan2(- str2double(D{5}), str2double(D{6}))*180.0)/pi; % str2double(D{2})/(2.0^15.0)*250;
@@ -157,6 +159,10 @@ while(1)
     gForceX = str2double(D{4}) / 16384.0;
     gForceY = str2double(D{5}) / 16384.0; 
     gForceZ = str2double(D{6}) / 16384.0;
+
+    for i=1:length(inputList)
+        disp(i);
+    end
     
     line1.XData = [line1.XData i];
     line1.YData = [line1.YData gyro_pitch];    % Gyroscope X -axis
