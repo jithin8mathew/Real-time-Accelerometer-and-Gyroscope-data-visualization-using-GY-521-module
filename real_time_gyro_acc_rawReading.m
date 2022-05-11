@@ -160,9 +160,9 @@ while(1)
     gForceY = str2double(D{5}) / 16384.0; 
     gForceZ = str2double(D{6}) / 16384.0;
 
-    for i=1:length(inputList)
-        disp(i);
-    end
+    %for i=1:length(inputList)
+    %    disp(i);
+    %end
     
     line1.XData = [line1.XData i];
     line1.YData = [line1.YData gyro_pitch];    % Gyroscope X -axis
